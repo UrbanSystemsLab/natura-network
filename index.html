@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        margin: 0;
+        background: black;
+      }
+      canvas {
+        position: absolute;
+        z-index: -1;
+      }
+      .country, .boundary {
+        fill: none;
+        stroke: #fff;
+      }
+      .country {
+        stroke-opacity: .2;
+        stroke-dasharray: 5, 5;
+      }
+      .boundary {
+        stroke-opacity: .6;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.min.js"></script>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec2 a_position;
+      varying vec2 pos;
+
+      void main(void) {
+        gl_Position = vec4(a_position, 0.0, 1.0);
+        pos = a_position;
+      }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+
+      uniform sampler2D u_image;
+      uniform vec2 u_translate;  /*  width/2, height/2 */
+      uniform float u_scale;  /* in pixels ! */
+      uniform vec3 u_rotate;  /* rotation in degrees ! */
+
+      const float c_pi = 3.14159265358979323846264;
+      const float c_halfPi = c_pi * 0.5;
+      const float c_twoPi = c_pi * 2.0;
+
+      void applyRotation(in float rotatex, in float rotatey, in float rotatez,
+                         inout float lambda, inout float phi) {
+        float x, y, rho, c, cosphi, z, deltaLambda, deltaPhi, deltaGamma, cosDeltaPhi,
+            sinDeltaPhi, cosDeltaGamma, sinDeltaGamma, k, circle, proj, a, b;
+
+        cosphi = cos(phi);
+        x = cos(lambda) * cosphi;
+        y = sin(lambda) * cosphi;
+        z = sin(phi);
+
+        // inverse rotation
+        deltaLambda = rotatex / 90.0 * c_halfPi; // rotate[0]
+        deltaPhi = -rotatey / 90.0 * c_halfPi;   // rotate[1]
+        deltaGamma = -rotatez / 90.0 * c_halfPi; // rotate[2]
+
+        cosDeltaPhi = cos(deltaPhi);
+        sinDeltaPhi = sin(deltaPhi);
+        cosDeltaGamma = cos(deltaGamma);
+        sinDeltaGamma = sin(deltaGamma);
+
+        k = z * cosDeltaGamma - y * sinDeltaGamma;
+
+        lambda = atan(y * cosDeltaGamma + z * sinDeltaGamma,
+                      x * cosDeltaPhi + k * sinDeltaPhi) -
+                 deltaLambda;
+        k = k * cosDeltaPhi - x * sinDeltaPhi;
+        if (k > 0.99999)
+          k = 0.99999; // south pole (for some reason it goes > 1 near the pole??)
+        if (k < -0.99999)
+          k = -0.99999; // north pole
+        phi = asin(k);
+      }
+
+      void main(void) {
+        float x = (gl_FragCoord.x - u_translate.x) / u_scale;
+        float y = (u_translate.y - gl_FragCoord.y) / u_scale;
+
+        // Inverse orthographic projection
+        float rho = sqrt(x * x + y * y);
+
+        // Color the point (px, py) only if it exists in the texture
+        if (rho < 1.0) {
+          float c = asin(rho);
+          float sinc = sin(c);
+          float cosc = cos(c);
+          float lambda = atan(x * sinc, rho * cosc);
+          float phi = asin(y * sinc / rho);
+
+          // Apply the three-axis rotation
+          applyRotation(u_rotate.x, u_rotate.y, u_rotate.z, lambda, phi);
+
+          // pixels
+          float px = fract((lambda + c_pi) / c_twoPi);
+          float py = fract((phi + c_halfPi) / c_pi);
+          
+          gl_FragColor = texture2D(u_image, vec2(px, py));
+          
+          float intensity = 1.1; // boost the pixel by some factor
+          gl_FragColor[0] = intensity * gl_FragColor[0] * (1.3 - 0.3 * sqrt(gl_FragColor[0]));
+          gl_FragColor[1] = intensity * gl_FragColor[1];
+          gl_FragColor[2] = intensity * gl_FragColor[2];
+        }
+      }
+    </script>
+    <script type="text/javascript" src = "rasterGlobe.js"></script>
+  </body>
+</html>
