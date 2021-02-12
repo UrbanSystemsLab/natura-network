@@ -1,5 +1,7 @@
       // Select the canvas from the document.
       var canvas = document.querySelector("canvas");
+      var mousePos;
+      var mouseDown = 0;
 
       // Create the WebGL context, with fallback for experimental support.
       var context = canvas.getContext("webgl")
@@ -75,6 +77,22 @@
 
       })
 
+      document.onmousedown = function() {
+          ++mouseDown;
+      }
+      document.onmouseup = function() {
+          --mouseDown;
+      }
+
+      document.onmousemove = mouseListener;
+
+      function mouseListener (event) {
+          event = event || window.event;
+          mousePos = event.pageX / window.innerWidth;
+      }
+
+
+
 
       // Hack to ensure correct inference of window dimensions.
       function readySoon() {
@@ -134,6 +152,11 @@
         var rotate =  [30, -30, -30],
             speed = [0.5, 0, 0];
 
+        var speedScale = d3.scaleLinear()
+            .domain([0,1])
+            .range([-5,5]);
+
+
         var w = self.innerWidth, h = self.innerHeight;
         // var width = 800, height = width;
         var width = Math.min(w, h) * 0.8,
@@ -173,8 +196,12 @@
 
         // Rotate and redraw!
         function redraw() {
-          rotate = rotate.map(function(d, i){
-            return d = d + speed[i];
+            var speedMultiplier = 1;
+            if(mouseDown){
+                speedMultiplier = speedScale(mousePos)
+            }
+            rotate = rotate.map(function(d, i){
+            return d = d + speedMultiplier * speed[i];
           });
           // rotate = rotate.map(d => d += speed.i);
 
