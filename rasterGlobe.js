@@ -2,6 +2,11 @@
       var canvas = document.querySelector("canvas");
       var mousePos;
       var mouseDown = 0;
+      var rotationOn = true;
+
+      var div = d3.select("body").append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
 
       // Create the WebGL context, with fallback for experimental support.
       var context = canvas.getContext("webgl")
@@ -83,6 +88,12 @@
       document.onmouseup = function() {
           --mouseDown;
       }
+
+      document.addEventListener('keyup', event => {
+          if (event.code === 'Space') {
+          rotationOn = !rotationOn
+      }
+      })
 
       document.onmousemove = mouseListener;
 
@@ -201,7 +212,8 @@
                 speedMultiplier = speedScale(mousePos)
             }
             rotate = rotate.map(function(d, i){
-            return d = d + speedMultiplier * speed[i];
+                let rSpeed = (rotationOn ? d + speedMultiplier * speed[i] : d)
+            return d = rSpeed;
           });
           // rotate = rotate.map(d => d += speed.i);
 
@@ -303,6 +315,21 @@ function drawMarkers() {
             return gdistance > 1.57 ? 'none' : colorMarker;
         })
         .attr('r', 5)
+        .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(d.description + " <br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
+
 
     markerGroup.each(function () {
         this.parentNode.appendChild(this);
