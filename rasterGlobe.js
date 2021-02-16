@@ -212,7 +212,14 @@
                 speedMultiplier = speedScale(mousePos)
             }
             rotate = rotate.map(function(d, i){
-                let rSpeed = (rotationOn ? d + speedMultiplier * speed[i] : d)
+                var rSpeed;
+                if(mouseDown){
+                    rSpeed = d + speedMultiplier * speed[i]
+                } else if (rotationOn) {
+                    rSpeed = d + speedMultiplier * speed[i]
+                } else {
+                    rSpeed = d
+                }
             return d = rSpeed;
           });
           // rotate = rotate.map(d => d += speed.i);
