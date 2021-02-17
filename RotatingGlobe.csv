@@ -1,4 +1,4 @@
-title,longitude,latitude
+title,longitude,latitude,description
 BEIJING,116.407394,39.904202
 VALDIVIA,-73.23152,-39.82539
 SAN JUAN,-66.105736,18.46554
@@ -8,7 +8,7 @@ DETROIT,-83.047836,42.332939
 NEW YORK,-74.005974,40.712776
 SHENZHEN,114.120178,22.554319
 HELSINKI,24.93819,60.16983
-BERLIN,13.404954,52.520008
+ICLEI Europe,13.404954,52.520008,ICLEI – Local Governments for Sustainability is a global network of more than 1,750 local and regional governments committed to sustainable urban development.
 OSLO,10.73874,59.913818
 PRAGUE,14.4378,50.075539
 ROTTERDAM,4.47059,51.922909
