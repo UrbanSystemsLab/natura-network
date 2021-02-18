@@ -239,7 +239,7 @@
         svg.selectAll("text")
             .attr("x", d => projection([d.longitude, d.latitude])[0])
             .attr("y", d => projection([d.longitude, d.latitude])[1] - 30)
-            // .style("font-size", 20)
+            .style("font-size", 14)
             .attr("text-anchor", "middle")
             .attr('fill', d => {
                 const coordinate = [d.longitude, d.latitude];
@@ -321,7 +321,7 @@ function drawMarkers() {
             gdistance = d3.geoDistance(coordinate, projection.invert(center));
             return gdistance > 1.57 ? 'none' : colorMarker;
         })
-        .attr('r', 5)
+        .attr('r', 3)
         .on("mouseover", function(d) {
             div.transition()
                 .duration(200)
