@@ -239,7 +239,7 @@
         svg.selectAll("text")
             .attr("x", d => projection([d.longitude, d.latitude])[0])
             .attr("y", d => projection([d.longitude, d.latitude])[1] - 30)
-            .style("font-size", 14)
+            .style("font-size", 10)
             .attr("text-anchor", "middle")
             .attr('fill', d => {
                 const coordinate = [d.longitude, d.latitude];
