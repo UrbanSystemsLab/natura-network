@@ -261,8 +261,8 @@
             .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
 
         d3.selectAll("circle")
-          .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
-
+          .attr("transform", "translate(" + translateX + ", "+ translateY + ")")
+          .style("stroke", "E80C7A");
           drawMarkers();
         }
       }
