@@ -187,7 +187,7 @@
               .attr("class", "country")
             .merge(countries)
               .attr("d", path)
-              .style("stroke", "FFFFFF")
+              .style("stroke", "E80C7A")
               .style("stroke-width", "1px")
               // .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
 
