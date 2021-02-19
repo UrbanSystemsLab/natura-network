@@ -244,7 +244,7 @@
             .attr('fill', d => {
                 const coordinate = [d.longitude, d.latitude];
                 gdistance = d3.geoDistance(coordinate, projection.invert(center));
-                return gdistance > 1.57 ? 'none' : colorText;
+                return gdistance > 1.57 ? 'none' : colorText; #DFF6FC
             })
             .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
 
