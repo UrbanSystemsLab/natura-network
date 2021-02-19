@@ -70,8 +70,8 @@
       const colorLand = '#ffffff';
       const colorWater = '#a4c7db'
       const colorMarker = '#DFF6FC'
-      const colorLine = '#DFF6FC'
-      const colorText = '#DFF6FC'
+      const colorLine = '#E80C7A'
+      const colorText = '#E80C7A'
 
       d3.csv("RotatingGlobe.csv", function(data){
           for(var i = 0; i < data.length; i++){
@@ -244,7 +244,7 @@
             .attr('fill', d => {
                 const coordinate = [d.longitude, d.latitude];
                 gdistance = d3.geoDistance(coordinate, projection.invert(center));
-                return gdistance > 1.57 ? 'none' : colorText; #DFF6FC
+                return gdistance > 1.57 ? 'none' : colorText;
             })
             .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
 
