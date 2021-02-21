@@ -297,7 +297,9 @@ function drawMarkers() {
         .attr("font-family", "Helvetica")
         .attr("x", d => projection([d.longitude, d.latitude])[0])
         .attr("y", d => projection([d.longitude, d.latitude])[1])
-        .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
+        .attr("transform", "translate(" + translateX + ", "+ translateY + ")")
+        .style("opacity", 0)
+    ;
 
 
     markers.enter()
@@ -307,7 +309,20 @@ function drawMarkers() {
         .attr('x2', d => projection([d.longitude, d.latitude])[0])
         .attr('y2', d => projection([d.longitude, d.latitude])[1] + d3.randomUniform(3, 15))
         .attr('stroke', colorLine)
-        .attr("transform", "translate(" + translateX + ", "+ translateY + ")");
+        .attr("transform", "translate(" + translateX + ", "+ translateY + ")")
+        .style("opacity", 0)
+        // .on('mouseover', () => {
+        //     d3.select(this)
+        //         .transition()
+        //         .duration(200)
+        //         .style("opacity", .9);
+        // })
+        // .on("mouseout", function(d) {
+        //     d3.select(this).transition()
+        //         .duration(500)
+        //         .style("opacity", 0);
+        // })
+    ;
 
     markers.enter()
         .append('circle')
@@ -324,16 +339,37 @@ function drawMarkers() {
             return gdistance > 1.57 ? 'none' : colorMarker;
         })
         .attr('r', 3)
-        .on("mouseover", function(d) {
+        .on("mouseover", function(d, i) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
             div.html(d.description + " <br/>")
-                .style("left", (d3.event.pageX) + "px")
+                .style("left", (d3.event.pageX + 14) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
+            d3.selectAll('line')
+                .filter((e, j) => {return j == i})
+                .transition()
+                .duration(200)
+                .style("opacity", 1);
+            d3.selectAll('text')
+                .filter((e, j) => {return j == i})
+                .transition()
+                .duration(200)
+                .style("opacity", 1);
         })
-        .on("mouseout", function(d) {
+
+        .on("mouseout", function(d, i) {
             div.transition()
+                .duration(500)
+                .style("opacity", 0);
+            d3.selectAll('line')
+                .filter((e, j) => {return j == i})
+                .transition()
+                .duration(500)
+                .style("opacity", 0);
+            d3.selectAll('text')
+                .filter((e, j) => {return j == i})
+                .transition()
                 .duration(500)
                 .style("opacity", 0);
         });
