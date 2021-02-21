@@ -332,7 +332,11 @@ function drawMarkers() {
         .attr('cy', d => projection([d.longitude, d.latitude])[1])
         .attr('fill', '#888')
         .style("stroke-width", 0.9)
-        .style("stroke", "#E80C7A")
+        .attr('stroke', d => {
+            const coordinate = [d.longitude, d.latitude];
+            gdistance = d3.geoDistance(coordinate, projection.invert(center));
+            return gdistance > 1.57 ? 'none' : "#E80C7A";
+        })
         .attr('fill', d => {
             const coordinate = [d.longitude, d.latitude];
             gdistance = d3.geoDistance(coordinate, projection.invert(center));
