@@ -161,7 +161,7 @@
 
         // The current rotation and speed.
         var rotate =  [30, -30, -30],
-            speed = [0.5, 0, 0];
+            speed = [0.3, 0, 0];
 
         var speedScale = d3.scaleLinear()
             .domain([0,1])
